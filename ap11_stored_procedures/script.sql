@@ -1,21 +1,176 @@
--- Active: 1742297520106@@127.0.0.1@5432@postgres
 
-CREATE OR REPLACE PROCEDURE sp_calcular_valor_de_um_pedido(
-  IN p_cod_pedido INT, OUT p_valor_total INT
-)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-  SELECT SUM(i.valor) FROM
-    tb_pedido p
-    INNER JOIN tb_item_pedido ip
-    ON p.cod_pedido = ip.cod_pedido
-    INNER JOIN tb_item i
-    ON ip.cod_item = i.cod_item
-    WHERE p.cod_pedido = p_cod_pedido
-    INTO $2;
-END;
-$$
+
+
+-- DO
+-- $$
+-- DECLARE
+--   v_troco INT;
+--   v_valor_total INT;
+--   v_valor_a_pagar INT := 100;
+--   v_cod_pedido INT := 1;
+-- BEGIN 
+--   CALL sp_calcular_valor_de_um_pedido(
+--     v_cod_pedido,
+--     v_valor_total
+--   );
+--   CALL sp_calcular_troco(
+--     v_troco,
+--     v_valor_a_pagar,
+--     v_valor_total
+--   );
+--   RAISE NOTICE 'A conta foi de R$%  e você pagou R$%. Troco: RS$%',
+--   v_valor_total, v_valor_a_pagar, v_troco;
+-- END;
+-- $$
+
+
+
+-- DO $$
+-- DECLARE
+--   v_troco INT;
+--   v_valor_total INT;
+--   v_valor_a_pagar INT := 100;
+--   v_cod_pedido INT := 1;
+-- BEGIN
+--   CALL sp_calcular_valor_de_um_pedido(
+--     v_cod_pedido, 
+--     v_valor_total
+--   );
+--   CALL sp_calcular_troco(
+--     v_troco,
+--     v_valor_a_pagar,
+--     v_valor_total
+--   );
+--   RAISE NOTICE 
+--     'A conta foi de R$% e você pagou R$%. Troco: R$%',
+--     v_valor_total, v_valor_a_pagar, v_troco;
+-- END;
+-- $$
+
+
+
+-- CREATE OR REPLACE PROCEDURE sp_calcular_troco(
+--   OUT p_troco INT,
+--   IN p_valor_a_pagar INT,
+--   IN p_valor_total INT
+-- ) LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--   p_troco := p_valor_a_pagar - p_valor_total;
+-- END;
+-- $$
+
+
+
+-- DO $$
+-- DECLARE
+--   v_cod_pedido INT := 1;
+-- BEGIN
+--   CALL sp_fechar_pedido(200, v_cod_pedido);
+-- END;
+-- $$
+
+-- SELECT * FROM tb_pedido;
+
+
+-- CREATE OR REPLACE PROCEDURE sp_fechar_pedido(
+--   IN p_valor_a_pagar INT,
+--   IN p_cod_pedido INT
+-- ) LANGUAGE plpgsql 
+-- AS $$
+-- DECLARE
+--   v_valor_total INT;
+-- BEGIN
+--   CALL sp_calcular_valor_de_um_pedido(
+--     p_cod_pedido,
+--     v_valor_total
+--   );
+--   IF p_valor_a_pagar < v_valor_total THEN
+--     RAISE NOTICE 
+--       'R$% insuficiente para pagar a conta de R$%',
+--       p_valor_a_pagar,
+--       v_valor_total;
+--   ELSE
+--     UPDATE tb_pedido p SET
+--     data_modificacao = CURRENT_TIMESTAMP,
+--     status = 'fechado'
+--     WHERE p.cod_pedido = p_cod_pedido;
+--   END IF;
+-- END;
+-- $$
+
+
+
+-- Active: 1742297520106@@127.0.0.1@5432@postgres
+-- DO 
+-- $$
+-- DECLARE 
+--   v_valor_total INT;
+--   v_cod_pedido INT := 1;
+-- BEGIN
+--   CALL sp_calcular_valor_de_um_pedido(v_cod_pedido, v_valor_total);
+--   RAISE NOTICE 'Total do Pedido %: R$ %', v_cod_pedido, v_valor_total;
+-- END;
+-- $$
+
+-- CREATE OR REPLACE PROCEDURE sp_calcular_valor_de_um_pedido(
+--   IN p_cod_pedido INT, OUT p_valor_total INT
+-- )
+-- LANGUAGE plpgsql
+-- AS
+-- $$
+-- BEGIN
+--   SELECT SUM(i.valor) FROM
+--   tb_pedido p 
+--   INNER JOIN tb_item_pedido ip 
+--   ON p.cod_pedido = ip.cod_pedido
+--   INNER JOIN  tb_item i 
+--   ON ip.cod_item = i.cod_item
+--   WHERE p.cod_pedido = p_cod_pedido
+--   INTO $2;
+-- END;
+-- $$
+
+
+
+
+
+
+-- DO $$
+-- DECLARE
+--   v_valor_total INT;
+--   v_cod_pedido INT := 1;
+-- BEGIN
+--   CALL sp_calcular_valor_de_um_pedido(v_cod_pedido, v_valor_total);
+--   RAISE NOTICE 'Total do pedido %: R$%', v_cod_pedido, v_valor_total;
+
+-- END;
+-- $$
+
+
+
+
+-- SELECT * FROM tb_item_pedido;
+-- SELECT * FROM tb_item;
+
+
+
+-- CREATE OR REPLACE PROCEDURE sp_calcular_valor_de_um_pedido(
+--   IN p_cod_pedido INT, OUT p_valor_total INT
+-- )
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--   SELECT SUM(i.valor) FROM
+--     tb_pedido p
+--     INNER JOIN tb_item_pedido ip
+--     ON p.cod_pedido = ip.cod_pedido
+--     INNER JOIN tb_item i
+--     ON ip.cod_item = i.cod_item
+--     WHERE p.cod_pedido = p_cod_pedido
+--     INTO $2;
+-- END;
+-- $$
 
 -- CALL sp_adicionar_item_a_pedido(1, 1);
 -- SELECT * FROM tb_item_pedido;
